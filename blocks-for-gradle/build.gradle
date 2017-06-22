@@ -1,0 +1,57 @@
+import java.text.SimpleDateFormat
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath (
+            ['org.apache.commons:commons-lang3:3.4'],
+        )
+    }
+}
+
+plugins {
+    id 'groovy'
+    id 'maven'
+    id 'com.jfrog.bintray' version '1.7.3'
+}
+
+ext.versionPrefix = "${versionClass}_${versionMajor}.${versionMinor}"
+version = "${versionPrefix}.${new SimpleDateFormat('yyyyMMddHHmmss').format(new Date())}"
+logger.lifecycle 'Building as {}', version
+
+defaultTasks 'clean', 'build'
+
+repositories {
+    mavenCentral()
+}
+
+// See https://github.com/bintray/gradle-bintray-plugin#readme
+if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayApiKey')) {
+    bintray {
+        user = bintrayUser
+        key = bintrayApiKey
+        configurations = ['archives']
+        publish = true
+        pkg {
+            repo = 'snapshot'
+            name = 'git-bulk-blocks-for-gradle'
+            userOrg = user
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/andreiled/git-bulk-tools.git'
+            version {
+                name = project.version
+            }
+        }
+    }
+}
+
+dependencies {
+    compile (
+        localGroovy(),
+    )
+}
+
+jar.baseName project.artifactId
