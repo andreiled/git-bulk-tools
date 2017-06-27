@@ -1,0 +1,5 @@
+include 'gitCliWrapper'
+project(':gitCliWrapper').projectDir = file('git-cli-wrapper')
+
+include 'blocksForGradle'
+project(':blocksForGradle').projectDir = file('blocks-for-gradle')

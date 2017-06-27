@@ -1,0 +1,49 @@
+import java.text.SimpleDateFormat
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.jfrog.bintray' version '1.7.3' apply false
+}
+
+defaultTasks 'clean', 'build'
+
+ext.versionPrefix = "${versionClass}_${versionMajor}.${versionMinor}"
+// TODO: use incremental build number for publicly published versions
+version = "${versionPrefix}.${new SimpleDateFormat('yyyyMMddHHmmss').format(new Date())}"
+logger.lifecycle 'Building as {}', version
+
+subprojects { subproject ->
+    apply plugin: 'maven'
+    apply plugin: 'com.jfrog.bintray'
+
+    subproject.version = rootProject.version
+    subproject.ext.versionPrefix = rootProject.versionPrefix
+
+    repositories {
+        mavenCentral()
+    }
+
+    // See https://github.com/bintray/gradle-bintray-plugin#readme
+    if (subproject.hasProperty('bintrayUser') && subproject.hasProperty('bintrayApiKey')) {
+        bintray {
+            user = bintrayUser
+            key = bintrayApiKey
+            configurations = ['archives']
+            publish = true
+            pkg {
+                repo = 'snapshot'
+                userOrg = user
+                licenses = ['Apache-2.0']
+                vcsUrl = 'https://github.com/andreiled/git-bulk-tools.git'
+                version {
+                    name = project.versionPrefix
+                }
+            }
+        }
+    }
+}

@@ -7,7 +7,7 @@ defaultTasks 'clean', 'build'
 // See https://github.com/bintray/gradle-bintray-plugin#readme
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayApiKey')) {
     bintray.pkg {
-        name = 'gitbulk-blocks-for-gradle'
+        name = 'git-cli-wrapper'
     }
 }
 
