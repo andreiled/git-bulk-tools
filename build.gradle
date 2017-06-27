@@ -30,7 +30,7 @@ subprojects { subproject ->
 
     // See https://github.com/bintray/gradle-bintray-plugin#readme
     if (subproject.hasProperty('bintrayUser') && subproject.hasProperty('bintrayApiKey')) {
-        bintray {
+        subproject.bintray {
             user = bintrayUser
             key = bintrayApiKey
             configurations = ['archives']
@@ -38,6 +38,7 @@ subprojects { subproject ->
             pkg {
                 repo = 'snapshot'
                 userOrg = user
+                name = subproject.bintrayPkg
                 licenses = ['Apache-2.0']
                 vcsUrl = 'https://github.com/andreiled/git-bulk-tools.git'
                 version {
